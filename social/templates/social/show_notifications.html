@@ -1,0 +1,99 @@
+
+{% block content %}
+<div class="dropdown">
+    <span class="badge bg-primary notification-badge" onclick="showNotifications()">
+        {{ notifications.count }}
+    </span>
+    <div class="dropdown-content" id="notification-container">
+        {% for notification in notifications %}
+            {% if notification.post %}
+                {% if notification.notification_type == 1 %}
+                <div class="dropdown-item-parent">
+                    <a href="#">@{{ notification.from_user }} liked your post</a>
+                    <span class="dropdown-item-close">&times;</span>
+                </div>
+                {% elif notification.notification_type == 2 %}
+                <div class="dropdown-item-parent">
+                    <a href="#">@{{ notification.from_user }} commented on your post</a>
+                    <span class="dropdown-item-close">&times;</span>
+                </div>
+                {% endif %}
+
+            {% elif notification.comment %}
+                {% if notification.notification_type == 1 %}
+                <div class="dropdown-item-parent">
+                    <a href="#">@{{ notification.from_user }} liked your comment</a>
+                    <span class="dropdown-item-close">&times;</span>
+                </div>
+                {% elif notification.notification_type == 2 %}
+                <div class="dropdown-item-parent">
+                    <a href="#">@{{ notification.from_user }} replied to your comment</a>
+                    <span class="dropdown-item-close">&times;</span>
+                </div>
+                {% endif %}
+            {% else %}
+            <div class="dropdown-item-parent">
+                <a href="#">@{{ notification.from_user }} started following you</a>
+                <span class="dropdown-item-close">&times;</span>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+<style>
+ .dropdown{
+    position:relative;
+    display: inline-block;
+}
+
+.dropdown-content{
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 300px;
+    box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-size: 1rem;
+}
+
+.dropdown-content a{
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color:#ddd
+}
+
+.dropdown-item-parent{
+    position: relative;
+    display: block;
+}
+
+.dropdown-item-close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.8rem;
+    padding-right: 5px;
+    transition: 0.3s;
+}
+
+.dropdown-item-close:hover{
+    color: rgb(180, 25, 25)
+    transition: 0.3s;
+    cursor: pointer;
+}
+.notification-badge{
+    transition: 0.3s;
+}
+
+.notification-badge:hover{
+    cursor: pointer;
+    opacity: 0.75s;
+    transition: 0.3s;
+}
+
+</style>

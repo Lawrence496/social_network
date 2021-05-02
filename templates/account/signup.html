@@ -1,0 +1,66 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-sm-12 mt-5 text-center">
+    <a href="{% url 'Index' %}"><img src="/media/logo3.png" class="img-fluid" style="width: 200px; height: 200px; position: absolute; margin-top: -130px; margin-left: -85px"></a>
+    <h3 class="text-center">{% trans "Sign Up" %}</h3>
+
+    <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}" style="text-decoration:none">sign in</a>.{% endblocktrans %}</p>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-6 col-sm-12">
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button id="eye" class="bg-light" onclick="ShowPassword()" type="button"><i class="fa fa-eye"></i></button>
+
+      <div class="d-grid gap-2">
+        <button class="mt-3 btn-submit" type="submit">{% trans "Sign Up" %} &raquo;</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+    .btn-submit{
+        background-image: linear-gradient(to right, #e2c5a3, #d2a672);
+        border: none;
+        height: 40px;
+        border-radius: 30px;
+    }
+    .signup{
+      width:80%;
+      margin: auto;
+    }
+    .signup input{
+        border-radius: 30px;
+        margin-left: -10px;
+    }
+    #eye{
+      margin-left: 36%;
+      margin-top: -93px;
+      position: absolute;
+      background: ;
+      border: none;
+    }
+</style>
+<script>
+  function ShowPassword() {
+    var x = document.getElementById("id_password1");
+      if (x.type === "password") {
+       x.type = "text";
+       } else {
+       x.type = "password";
+    }
+}
+</script>
+{% endblock %}

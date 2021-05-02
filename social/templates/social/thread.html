@@ -1,0 +1,51 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="card col-md-12 mt-5 p-3">
+            {% if thread.sender == request.user %}
+                <p>{{ thread.sender.profile.name }}</p>
+            {% else %}
+                <p style="font-weight: bold;">{{ thread.receiver.profile.name }}</p>
+                <p>@{{ thread.receiver}}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% if message_list.all.count == 0 %}
+    <div class="row my-5">
+        <div class="col-md-12 text-center">
+            <i class="fa fa-paper-plane" id="no-messages"></i>
+            <p class="empty-text"> No Messages</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% for message in message_list %}
+    <div class="row">
+        <div class="col-md-12 my-1">
+            {% if message.sender_user == request.user %}
+                <div class="sent-message my-3">
+                    <p>{{ message.body }}</p>
+                </div>
+            {% elif message.receiver_user == request.user %}
+                <div class="received-message my-3">
+                    <p>{{ message.body }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="card col-md-12 p-3 shadow-sm">
+            <form method="POST" action="{% url 'create-message' thread.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}
+                    <button class="btn btn-light gap-2 message-submit" type="submit"><i class="fa fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
