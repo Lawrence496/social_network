@@ -12,8 +12,13 @@
         <div class="card shadow col-md-8 col-sm-12 border-bottom px-5 pt-2">
             <div class="text-center">
                 <img src="{{ profile.picture.url }}" class="rounded-circle" width="100" height="100" />
+
                 {% if profile.name %}
-                <h4 class="py-3">{{ profile.name }}
+                    {% if profile.is_verified %}
+                        <h4 class="py-3">{{ profile.name }} <i class="fa fa-check-circle" style="color: navy; font-size: 20px;"></i>
+                     {% else %}
+                         <h4 class="py-3">{{ profile.name }}
+                     {% endif %}
                     <span>
                         {% if request.user == user %}
                         <a href="{% url 'profile-edit' profile.pk %}" class="edit-color"><i class="fa fa-edit" style="font-size:15px"></i> </a>
@@ -80,7 +85,11 @@
                 <p class="post-text">
                     <a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">
                     {% if profile.name %}
-                        <span class="profile-name">{{ profile.name}}</span>
+                        {% if profile.is_verified %}
+                            <span class="profile-name">{{ profile.name}} <i class="fa fa-check-circle" style="color: navy; font-size: 15px;"></span></i>
+                        {% else %}
+                            <span class="profile-name">{{ profile.name}} </span>
+                        {% endif %}
                     {% endif %}
                         @{{ post.author }} </a> {{ post.created_on }}
                 </p>

@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+import json
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -161,6 +162,18 @@ class ProfileView(View):
         }
 
         return render(request, 'social/profile.html', context)
+
+    def post(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        profile.is_verified = True
+        profile.save()
+
+        context = {
+            'profile': profile
+        }
+
+        return render(request, 'social/profile.html', context)
+
 
 
 class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -357,10 +370,10 @@ class ListThreads(View):
 
 class CreateThread(View):
     def get(self, request, *args, **kwargs):
-        form = ThreadForm()
+        profile = request.GET('username')
 
         context = {
-            'form': form
+            'profile': profile
         }
 
         return render(request, 'social/create_thread.html', context)

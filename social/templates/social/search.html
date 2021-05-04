@@ -2,11 +2,14 @@
 
 {% block content %}
 <div class="container">
+    {% if user.is_authenticated %}
         <div class="col-md-5 col-sm-6 mt-3">
             <a href="{% url 'post-list' %}" class="btn btn-light">
                 Back to Feed
             </a>
         </div>
+    {% endif %}
+
     {% for profile in profile_list %}
         <div class="row justify-content-center mt-3">
             <div class="col-md-5 col-sm-12 border-bottom position-relative">
@@ -15,12 +18,22 @@
                         <img class="rounded-circle post-img" height="30" width="30" src="{{ profile.picture.url }}" />
                     </a>
                     <p class="post-text">
-                        <a class="post-link" href="{% url 'profile' profile.pk %}">
-                            {% if profile.name %}
-                            <h5>{{ profile.name }}</h5>
-                            {% endif %}
-                    <p class="ml-4">@{{ profile.user }}<p> </a>
-                    </p>
+                    {% if profile.name %}
+                        {% if profile.is_verified %}
+                            <h5>{{ profile.name }} <i class="fa fa-check-circle" style="color: navy; font-size: 20px;"></i></h5>
+                         {% else %}
+                             <h5>{{ profile.name }}</h5>
+                         {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'profile' profile.pk %}" class="post-link"><p class="ml-4">@{{ profile.user }}</p></a>
+                        {% else %}
+                            <p class="ml-4">@{{ profile.user }}</p>
+                        {% endif %}
+                    {% elif user.is_authenticated %}
+                        <a href="{% url 'profile' profile.pk %}" class="post-link"><h5 class="mt-3">@{{ profile.user }}</h5></a>
+                    {% else %}
+                        <h5 class="mt-3">@{{ profile.user }}</h5>
+                    {% endif %}
                 </div>
                 {% if profile.location %}
                     <p class="ml-4">{{ profile.location }}</p>
