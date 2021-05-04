@@ -13,10 +13,12 @@
     {% for profile in profile_list %}
         <div class="row justify-content-center mt-3">
             <div class="col-md-5 col-sm-12 border-bottom position-relative">
-                <div>
-                    <a href="{% url 'profile' profile.pk %}">
-                        <img class="rounded-circle post-img" height="30" width="30" src="{{ profile.picture.url }}" />
-                    </a>
+                {% if user.is_authenticated %}
+                {% else %}
+                    <h5 class="mb-5">To view complete profiles you have to login</h5>
+                {% endif %}
+                <div class="mt-3">
+                    <img class="rounded-circle post-img" height="30" width="30" src="{{ profile.picture.url }}" />
                     <p class="post-text">
                     {% if profile.name %}
                         {% if profile.is_verified %}

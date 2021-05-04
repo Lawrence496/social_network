@@ -370,10 +370,10 @@ class ListThreads(View):
 
 class CreateThread(View):
     def get(self, request, *args, **kwargs):
-        profile = request.GET('username')
+        form = ThreadForm()
 
         context = {
-            'profile': profile
+            'form': form
         }
 
         return render(request, 'social/create_thread.html', context)
