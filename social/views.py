@@ -383,24 +383,24 @@ class CreateThread(View):
 
         username = request.POST.get('username')
 
-        # try:
-        receiver = User.objects.get(username=username)
-        if ThreadModel.objects.filter(user=request.user, receiver=receiver).exists():
-            thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
-            return redirect('thread', pk=thread.pk)
-        elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
-            thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
-            return redirect('thread', pk=thread.pk)
+        try:
+            receiver = User.objects.get(username=username)
+            if ThreadModel.objects.filter(user=request.user, receiver=receiver).exists():
+                thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
+                return redirect('thread', pk=thread.pk)
+            elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
+                thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
+                return redirect('thread', pk=thread.pk)
 
-        if form.is_valid():
-            thread = ThreadModel(
-                user=request.user,
-                receiver=receiver
-            )
-            thread.save()
-            return redirect('thread', pk=thread.pk)
-    # except:
-        return redirect('create-thread')
+            if form.is_valid():
+                thread = ThreadModel(
+                    user=request.user,
+                    receiver=receiver
+                )
+                thread.save()
+                return redirect('thread', pk=thread.pk)
+        except:
+            return redirect('create-thread')
 
 
 class ThreadView(View):
