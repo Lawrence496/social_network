@@ -9,21 +9,20 @@
     </div>
 
     <div class="row justify-content-center mt-5">
-        <div class="card shadow col-md-8 col-sm-12 border-bottom px-5 pt-2">
-            <div class="text-center">
-                    <img src="{{ profile.picture.url }}" class="circle" height="80" width="80">
-
+        <div class="card shadow col-md-6 col-sm-12">
+            <img class="card-img-top" src="{{ request.user.profile.cover_picture.url }}" alt="Card image cap" style="margin-left: -15px; width: auto; margin-right: -15px; height: 200px">
+            <div class="card-body">
+                <div class="text-center" style="margin-top: -70px">
+                <img src="{{ profile.picture.url }}" class="rounded-circle" width="100" height="100"/>
                 {% if profile.name %}
-                    {% if profile.is_verified %}
-                        <h4 class="py-3">{{ profile.name }} <i class="fa fa-check-circle" style="color: navy; font-size: 20px;"></i>
-                     {% else %}
-                         <h4 class="py-3">{{ profile.name }}
-                     {% endif %}
+                <h4>{{ profile.name }}
                     <span>
                         {% if request.user == user %}
                         <a href="{% url 'profile-edit' profile.pk %}" class="edit-color"><i class="fa fa-edit" style="font-size:15px"></i> </a>
                         {% endif %}
-                    </span></h4></h4>
+                    </span>
+                </h4>
+                <p class="text-center user-name">@{{ user.username }}</p>
                     {% else %}
                     <h4 class="py-4">{{ user.username}}
                         <span>
@@ -39,14 +38,27 @@
             <p>{{ profile.bio }}</p>
             {% endif %}
 
-            <div class="mb-3">
-                <a href="{% url 'followers-list' profile.pk %}" class="post-link">Followers: {{ number_of_followers }}</a>
+            <div>
+                <span><div style="text-align: left">
+                    <p class="post-num"><b>{{ posts.all.count }}</b></p>
+                    <p class="followers-text">Posts</p>
+                </div>
+                 <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: center;">
+                    <p class="followers-num" style="margin-left: -35px"><b>{{ number_of_followers }}</b></p>
+                    <p class="followers-text" style="margin-left: -40px">Followers</p>
+                </a>
+                <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: right">
+                    <p class="following-num"><b>{{ number_of_following }}</b></p>
+                    <p class="followers-text">Following</p>
+                </a></span>
             </div>
+            </div>
+
         </div>
     </div>
 
     <div class="row justify-content-center mt-5">
-        <div class="card shadow col-md-8 col-sm-12 border-bottom px-5 py-3">
+        <div class="card shadow col-md-6 col-sm-12 border-bottom px-5 py-3">
             {% if profile.birth_date %}
             <p>Birthday: {{ profile.birth_date }}</p>
             {% endif %}
@@ -75,8 +87,8 @@
 
 
     {% for post in posts %}
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8 col-sm-12 border-bottom">
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-6 col-sm-12 border-bottom">
             <div>
                 <a href="{% url 'profile' post.author.profile.pk %}">
                     <img class="rounded-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}" />
@@ -84,16 +96,12 @@
                 <p class="post-text">
                     <a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">
                     {% if profile.name %}
-                        {% if profile.is_verified %}
-                            <span class="profile-name">{{ profile.name}} <i class="fa fa-check-circle" style="color: navy; font-size: 15px;"></span></i>
-                        {% else %}
-                            <span class="profile-name">{{ profile.name}} </span>
-                        {% endif %}
+                        <span class="profile-name">{{ profile.name}}</span>
                     {% endif %}
                         @{{ post.author }} </a> {{ post.created_on }}
                 </p>
             </div>
-            <div class="position-relative">
+            <div class="position-relative" style="margin-left: 35px">
             <p>{{ post.body }}</p>
             {% if post.image %}
                 <img src="{{ post.image.url }}" class="post-image">
@@ -101,20 +109,20 @@
             <a href="{% url 'post-detail' post.pk%}" class="stretched-link"></a>
             </div>
 
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row mb-3" style="margin-left: 35px">
                 <form method="POST" action="{% url 'like' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-up"><span>{{ post.likes.all.count }}</span></i>
+                        <i class="fa fa-thumbs-o-up"><span> {{ post.likes.all.count }}</span></i>
                     </button>
                 </form>
 
                 <form method="POST" action="{% url 'dislike' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
-                    <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>
+                    <button class="remove-default-btn ml-3">
+                        <i class="fa fa-thumbs-o-down"> <span> {{ post.dislikes.all.count }}</span></i>
                     </button>
                 </form>
 

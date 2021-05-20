@@ -1,7 +1,10 @@
 {% extends 'landing/base.html' %}
 {% load crispy_forms_tags %}
 
+
 {% block content %}
+
+{% block title %}<title>Home</title>{% endblock title%}
 
 {% if user.is_authenticated %}
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -61,7 +64,7 @@
                     @{{ post.author }} </a>{{ post.created_on }}
                 </p>
             </div>
-            <div class="position-relative mb-3">
+            <div class="position-relative mb-3" style="margin-left: 35px">
                 <p>{{ post.body }}</p>
                 {% if post.image %}
                     <img src="{{ post.image.url }}" class="post-image">
@@ -69,20 +72,20 @@
                 <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
             </div>
 
-            <div class="d-flex flex-row mb-3">
+            <div class="d-flex flex-row mb-3" style="margin-left: 35px">
                 <form method="POST" action="{% url 'like' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                      <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-up"><span> {{ post.likes.all.count }}</span> </i>
+                        <i class="fa fa-thumbs-o-up"><span> {{ post.likes.all.count }}</span> </i>
                     </button>
                 </form>
 
                 <form method="POST" action="{% url 'dislike' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
-                    <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>
+                    <button class="remove-default-btn ml-3">
+                        <i class="fa fa-thumbs-o-down"> <span> {{ post.dislikes.all.count }}</span></i>
                     </button>
                 </form>
 

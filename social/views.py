@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-import json
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -21,6 +20,7 @@ class PostListView(LoginRequiredMixin, View):
         context = {
             'post_list': posts,
             'form': form,
+            'title': 'Feeds'
         }
 
         return render(request, 'social/post_list.html', context)
@@ -159,6 +159,7 @@ class ProfileView(View):
             'posts': posts,
             'number_of_followers': number_of_followers,
             'is_following': is_following,
+            'title': user
         }
 
         return render(request, 'social/profile.html', context)
@@ -178,7 +179,7 @@ class ProfileView(View):
 
 class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = UserProfile
-    fields = ['name', 'bio', 'birth_date', 'location', 'picture']
+    fields = ['name', 'bio', 'birth_date', 'location', 'picture', 'cover_picture']
     template_name = 'social/profile_edit.html'
 
     def get_success_url(self):
@@ -362,7 +363,8 @@ class ListThreads(View):
         threads = ThreadModel.objects.filter(Q(user=request.user) | Q(receiver=request.user))
 
         context = {
-            'threads': threads
+            'threads': threads,
+            'title': 'Message'
         }
 
         return render(request, 'social/inbox.html', context)
@@ -413,6 +415,7 @@ class ThreadView(View):
             'thread': thread,
             'form': form,
             'message_list': message_list,
+            'title': 'Messages'
         }
 
         return render(request, 'social/thread.html', context)
