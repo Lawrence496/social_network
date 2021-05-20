@@ -6,13 +6,13 @@
                 <i class="fa fa-bars"></i>
             </button>
             <h3 class="mt-2 ml-5" style="position: absolute">{{ title }}</h3>
-            <a class="justify-content-center mx-auto d-block"
-            {% if user.is_authenticated %}
-            href = "{% url 'post-list' %}"
-            {% else %}
-            href= "{% url 'Index' %}"
-            {% endif %}
-            ><img src="/media/logo3.png"></a>
+
+             <form class="d-flex" method="GET" action="{% url 'profile-search'%}">
+                  <div class="input-group" style="width: 180px; position:absolute; margin-left: 35%">
+                    <input style="border:none; margin-top:6px" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name="query" value="{{request.GET.query}}">
+                    <button class="remove-default-btn" type="submit"><i class="fa fa-search"></i></button>
+                  </div>
+              </form>
         </header>
         <nav class="nav">
             <div class="nav_links">
