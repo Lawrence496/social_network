@@ -30,6 +30,30 @@ body{
 .mobile-list{
     display: none;
 }
+.input-group{
+    width: 180px;
+    margin-left: 70%;
+    position: absolute;
+}
+.input-group1{
+    margin-left: 68%;
+    position: absolute;
+}
+.input-group2{
+    margin-left: 65%;
+    padding-top: 9px;
+    position: absolute;
+}
+.logo1{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    margin-top: -80px;
+    margin-left: 40px;
+}
+.logo3{
+    display: none;
+}
 @media only screen and (max-width: 800px) {
     .mobile-list{
         display: block;
@@ -37,42 +61,52 @@ body{
         position: fixed;
         bottom: 0;
         left: 0;
-        margin-bottom: -10px;
         display: flex;
         justify-content: space-around;
         align-items: center;
         width: 100%;
         padding: 10px;
         background-color: #eee;
-        box-shadow: 0 -2px 5px -2px #333;
-        z-index: 1000;
+        z-index: 1;
+        margin-bottom: -10px;
     }
     .mobile-list i{
         font-size: 6vmin;
         cursor: pointer;
     }
     .mobile-list p{
-        font-size: 2.5vmin;
+        font-size: 2vmin;
+        align-items: center;
         text-align: center;
-        margin: -3px -20px;
+        margin: 0 -20px;
     }
     .mobile-list li:hover i{
         color: blueviolet;
     }
+    .input-group{
+        margin-left: 35%;
+        position: absolute;
+    }
+    .input-group1{
+        display: none;
+    }
+    .input-group2{
+        display: none;
+    }
+    .logo1{
+        display: none;
+    }
+    .logo3{
+        display: block;
+        margin-left: -25px;
+    }
+}
     .mobile-list .active a{
         color: #f45c43;
     }
-     .mobile-list .active-img a{
-        color: #f45c43;
-    }
-    .mobile-list .active-img img{
-        color: #f45c43;
-        border: 3px solid #f45c43;
-        cursor: pointer;
-    }
-}
-
 /* Sidebar */
+
+
 
 .header{
     position: fixed;
@@ -105,7 +139,7 @@ body{
     top: 0;
     left: 0;
     z-index: 2;
-    height: 100vh;
+    height: 100%;
     width: 250px;
     background: #fff;
     transform: translateX(-250px);
@@ -232,6 +266,7 @@ h1, h2, h3, h4, h5
     color: black;
     transition: 0.5s;
 }
+
 .inbox-icon:hover{
     transition: 0.5s;
 }
@@ -302,16 +337,10 @@ h1, h2, h3, h4, h5
      object-fit: cover;
 }
 .post-num{
-    margin-left: 20px;
     font-size: 25px;
     margin-bottom: -10px;
 }
-.following-num{
-    margin-right: 40px;
-    font-size: 30px;
-    margin-bottom: -10px;
-    margin-top: -83px;
-}
+
 .followers-num{
     margin-right: 10px;
     font-size: 25px;
@@ -321,4 +350,12 @@ h1, h2, h3, h4, h5
 .followers-text{
     font-size: 22px;
     font-weight: 400
+}
+.share-btn{
+    cursor: pointer;
+}
+.shared-post{
+    margin-left: 30px;
+    background-color: rgba(216, 227, 223, 0.8);
+    border-radius: 10px;
 }

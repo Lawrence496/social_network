@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.views import View
-from .models import Post, Comment, UserProfile, ThreadModel, MessageModel
-from .forms import PostForm, CommentForm, ThreadForm, MessageForm
+from .models import Post, Comment, UserProfile, ThreadModel, MessageModel, Image
+from .forms import PostForm, CommentForm, ThreadForm, MessageForm, ShareForm
 from django.views.generic import UpdateView, DeleteView
 
 
@@ -14,13 +16,16 @@ class PostListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
+            author__profile__followers__in=[logged_in_user.id],
         ).order_by('-created_on')
         form = PostForm()
+        share_form = ShareForm()
+
         context = {
             'post_list': posts,
             'form': form,
-            'title': 'Feeds'
+            'title': 'Feeds',
+            'shareform': share_form
         }
 
         return render(request, 'social/post_list.html', context)
@@ -28,18 +33,31 @@ class PostListView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         logged_in_user = request.user
         posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
+            author__profile__followers__in=[logged_in_user.id],
+
         ).order_by('-created_on')
         form = PostForm(request.POST, request.FILES)
+        share_form = ShareForm()
+        files = request.FILES.getlist('image')
 
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.author = request.user
             new_post.save()
 
+            new_post.create_tags()
+
+            for f in files:
+                img = Image(image=f)
+                img.save()
+                new_post.image.add(img)
+
+            new_post.save()
+
         context = {
             'post_list': posts,
             'form': form,
+            'shareform': share_form,
         }
 
         return render(request, 'social/post_list.html', context)
@@ -69,6 +87,8 @@ class PostDetailView(LoginRequiredMixin, View):
             new_comment.author = request.user
             new_comment.post = post
             new_comment.save()
+
+            new_comment.create_tags()
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
 
@@ -331,6 +351,28 @@ class AddCommentDisLike(LoginRequiredMixin, View):
         return HttpResponseRedirect(next)
 
 
+class SharedPostView(View):
+    def post(self, request, pk, *args, **kwargs):
+        original_post = Post.objects.get(pk=pk)
+        form = ShareForm(request.POST)
+
+        if form.is_valid():
+            new_post = Post(
+                shared_body=self.request.POST.get('body'),
+                body=original_post.body,
+                author=original_post.author,
+                created_on=original_post.created_on,
+                shared_user=request.user,
+                shared_on=timezone.now(),
+            )
+            new_post.save()
+
+            for img in original_post.image.all():
+                new_post.image.add(img)
+            new_post.save()
+        return redirect('post-list')
+
+
 class UserSearch(View):
     def get(self, request, *args, **kwargs):
         query = self.request.GET.get('query')
@@ -419,6 +461,7 @@ class ThreadView(View):
         }
 
         return render(request, 'social/thread.html', context)
+
 
 class CreateMessage(View):
     def post(self, request, pk, *args, **kwargs):

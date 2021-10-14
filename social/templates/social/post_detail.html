@@ -29,27 +29,35 @@
                         <a href="{% url 'post-delete' post.pk %}" class="edit-color"><i class="fa fa-trash"></i> </a>
                         {% endif %}
                     </p>
-                    <p>{{ post.body }}</p>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" class="post-image">
-                    {% endif %}
+                   <div class="body">
+                        <p class="ml-5">{{ post.body }}</p>
+                   </div>
+                    {% if post.image.count > 0 %}
+                    <div class="row ml-5">
+                        {% for img in post.image.all %}
+                            <div class="col-md-4 col-xs-12">
+                                <img src="{{ img.image.url }}" class="post-image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 </div>
 
 
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row ml-5">
                 <form method="POST" action="{% url 'like' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-up"><span>{{ post.likes.all.count }}</span></i>
+                        <i class="fa fa-thumbs-o-up"><span>{{ post.likes.all.count }}</span></i>
                     </button>
                 </form>
 
                 <form method="POST" action="{% url 'dislike' post.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
-                    <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>
+                    <button class="remove-default-btn ml-3">
+                        <i class="fa fa-thumbs-o-down"> <span>{{ post.dislikes.all.count }}</span></i>
                     </button>
                 </form>
 
@@ -96,24 +104,24 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-up"><span>{{ comment.likes.all.count }}</span></i>
+                        <i class="fa fa-thumbs-o-up"><span>{{ comment.likes.all.count }}</span></i>
                     </button>
                 </form>
 
                 <form method="POST" action="{% url 'comment-dislike' post.pk comment.pk %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
-                    <button class="remove-default-btn">
-                        <i class="fa fa-thumbs-down"> <span>{{ comment.dislikes.all.count }}</span></i>
+                    <button class="remove-default-btn ml-3">
+                        <i class="fa fa-thumbs-o-down"> <span>{{ comment.dislikes.all.count }}</span></i>
                     </button>
                 </form>
              <div>
-                 <button class="remove-default-btn"><i class="fa fa-comment" onclick="commentReplyToggle('{{ comment.pk }}')"></i></button>
+                 <button class="remove-default-btn ml-3"><i class="fa fa-comment-o" onclick="commentReplyToggle('{{ comment.pk }}')"></i></button>
              </div>
             </div>
         </div>
      </div>
-    <div class="row justify-content-center mt-3 mb-4 d-none" id="{{ comment.pk }}">
+    <div class="row justify-content-center mt-2 mb-4 d-none" id="{{ comment.pk }}">
         <div class="col-md-5 col-sm-12">
             <p style="opacity:0.5">Write a comment...</p>
                 <form method="POST" action="{% url 'comment-reply' post.pk comment.pk %}">

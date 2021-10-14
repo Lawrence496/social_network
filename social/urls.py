@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, DisLike, UserSearch, ListFollowers, AddCommentLike, AddCommentDisLike, CommentReplyView, ListThreads, CreateThread, ThreadView, CreateMessage
+from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, DisLike, UserSearch, ListFollowers, AddCommentLike, AddCommentDisLike, CommentReplyView, ListThreads, CreateThread, ThreadView, CreateMessage, SharedPostView
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('post/<int:post_pk>/comment/delete/<int:pk>', CommentDeleteView.as_view(), name='comment-delete'),
     path('post/<int:pk>/like', AddLike.as_view(), name='like'),
     path('post/<int:pk>/dislike', DisLike.as_view(), name='dislike'),
+    path('post/<int:pk>/share', SharedPostView.as_view(), name='share-post'),
     path('post/<int:post_pk>/comment/<int:pk>/like', AddCommentLike.as_view(), name='comment-like'),
     path('post/<int:post_pk>/comment/<int:pk>/dislike', AddCommentDisLike.as_view(), name='comment-dislike'),
     path('post/<int:post_pk>/comment/<int:pk>/reply', CommentReplyView.as_view(), name='comment-reply'),

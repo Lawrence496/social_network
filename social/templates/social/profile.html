@@ -38,20 +38,29 @@
             <p>{{ profile.bio }}</p>
             {% endif %}
 
-            <div>
-                <span><div style="text-align: left">
+<!--            <div>-->
+
+<!--                <p class="post-num"><b>{{ posts.all.count }}</b></p>-->
+<!--                <p class="followers-text">Posts</p>-->
+<!--                 <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: center;">-->
+<!--                    <p class="followers-num" style="margin-left: -35px"><b>{{ number_of_followers }}</b></p>-->
+<!--                    <p class="followers-text" style="margin-left: -40px">Followers</p>-->
+<!--                </a>-->
+<!--                <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: right">-->
+<!--                    <p class="following-num"><b>500K</b></p>-->
+<!--                    <p class="followers-text">Following</p>-->
+<!--                </a>-->
+<!--            </div>-->
+                <div>
                     <p class="post-num"><b>{{ posts.all.count }}</b></p>
                     <p class="followers-text">Posts</p>
                 </div>
-                 <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: center;">
-                    <p class="followers-num" style="margin-left: -35px"><b>{{ number_of_followers }}</b></p>
-                    <p class="followers-text" style="margin-left: -40px">Followers</p>
-                </a>
-                <a href="{% url 'followers-list' profile.pk %}" class="post-link" style="text-align: right">
-                    <p class="following-num"><b>{{ number_of_following }}</b></p>
-                    <p class="followers-text">Following</p>
-                </a></span>
-            </div>
+                <div style="margin-top: 80px;">
+                    <a href="{% url 'followers-list' profile.pk %}" class="post-link">
+                        <p class="followers-num"><b>{{ number_of_followers }}</b></p>
+                        <p class="followers-text" >Followers</p>
+                    </a>
+                </div>
             </div>
 
         </div>
@@ -102,10 +111,18 @@
                 </p>
             </div>
             <div class="position-relative" style="margin-left: 35px">
-            <p>{{ post.body }}</p>
-            {% if post.image %}
-                <img src="{{ post.image.url }}" class="post-image">
-            {% endif %}
+                <div class="body">
+                    <p>{{ post.body }}</p>
+                </div>
+            {% if post.image.count > 0 %}
+                <div class="row">
+                    {% for img in post.image.all %}
+                        <div class="col-md-4 col-xs-12">
+                            <img src="{{ img.image.url }}" class="post-image">
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             <a href="{% url 'post-detail' post.pk%}" class="stretched-link"></a>
             </div>
 

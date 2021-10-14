@@ -6,12 +6,42 @@ from django.dispatch import receiver
 
 
 class Post(models.Model):
+    shared_body = models.TextField(blank=True, null=True)
     body = models.TextField()
-    image = models.ImageField(upload_to='uploads/post_photos', blank=True, null=True)
+    image = models.ManyToManyField('Image', blank=True)
     created_on = models.DateTimeField(default=timezone.now)
+    shared_on = models.DateTimeField(blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    shared_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='+')
     likes = models.ManyToManyField(User, blank=True, related_name='likes')
     dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
+    tags = models.ManyToManyField('Tag', blank=True)
+
+    def create_tags(self):
+        for word in self.body.split():
+            if word[0] == '#':
+                tag = Tag.objects.filter(name=word[1:]).first()
+                if tag:
+                    self.tags.add(tag.pk)
+                else:
+                    tag = Tag(name=word[1:])
+                    tag.save()
+                    self.tags.add(tag.pk)
+                self.save()
+        if self.shared_body:
+            for word in self.shared_body.split():
+                if (word[0] == '#'):
+                    tag = Tag.objects.filter(name=word[1:]).first()
+                    if tag:
+                        self.tags.add(tag.pk)
+                    else:
+                        tag = Tag(name=word[1:])
+                        tag.save()
+                        self.tags.add(tag.pk)
+                    self.save()
+
+    class Meta:
+        ordering = ['-created_on', '-shared_on']
 
 
 class Comment(models.Model):
@@ -22,7 +52,19 @@ class Comment(models.Model):
     likes = models.ManyToManyField(User, blank=True, related_name="comment_likes")
     dislikes = models.ManyToManyField(User, blank=True, related_name="comment_dislikes")
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    tags = models.ManyToManyField('Tag', blank=True)
 
+    def create_tags(self):
+        for word in self.comment.split():
+            if word[0] == "#":
+                tag = Tag.objects.filter(name=word[1:]).first()
+                if tag:
+                    self.tags.add(tag.pk)
+                else:
+                    tag = Tag(name=[word[1:]])
+                    tag.save()
+                    self.tags.add(tag.pk)
+                self.save()
     @property
     def children(self):
         return Comment.objects.filter(parent=self).order_by('-created_on').all()
@@ -40,8 +82,8 @@ class UserProfile(models.Model):
     bio = models.TextField(max_length=500, blank=True, null=True)
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=100, blank=True, null=True)
-    picture = models.ImageField(upload_to='uploads/profile_pictures', default='uploads/profile_pictures/user.png', blank=True)
-    cover_picture = models.ImageField(upload_to='uploads/cover_photos', default='uploads/cover_photos/index.jpg', blank=True)
+    picture = models.ImageField(upload_to='uploads/profile_pictures', default='uploads/profile_pictures/user.png',)
+    cover_picture = models.ImageField(upload_to='uploads/cover_photos', default='uploads/cover_photos/index.jpg',)
     followers = models.ManyToManyField(User, blank=True, related_name='followers')
     is_verified = models.BooleanField(default=False)
 
@@ -81,3 +123,11 @@ class MessageModel(models.Model):
     image = models.ImageField(upload_to="uploads/message_photos", blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
+
+
+class Image(models.Model):
+    image = models.ImageField(upload_to='uploads/post_photos', blank=True, null=True)
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
